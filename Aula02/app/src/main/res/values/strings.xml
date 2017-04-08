@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Aula 02</string>
+    <string name="texto_gasolina">Gasolina</string>
+    <string name="texto_etanol">Etanol</string>
+    <string name="button_calcular">Calcular</string>
+    <string name="texto_resultado">É melhor abastecer com %s</string>
+</resources>

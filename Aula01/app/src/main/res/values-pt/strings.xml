@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Aula 01</string>
+    <string name="mensagem_incial">Olá mundo!</string>
+</resources>
