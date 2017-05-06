@@ -24,6 +24,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile "com.android.support:appcompat-v7:$version_support"
+    compile "com.android.support:cardview-v7:$version_support"
     compile "com.android.support.constraint:constraint-layout:$version_constraint"
     compile "com.android.support:design:$version_support"
     compile "com.jakewharton:butterknife:$version_butterknife"

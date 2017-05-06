@@ -3,10 +3,9 @@ package br.com.nglauber.aula03;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import org.parceler.Parcels;
 
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 
 public class ListaActivity extends AppCompatActivity {
 
@@ -24,10 +22,10 @@ public class ListaActivity extends AppCompatActivity {
 
     private ArrayList<Pessoa> pessoas;
 
-    @BindView(R.id.lista_listview)
-    ListView listView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
-    ArrayAdapter<Pessoa> adapter;
+    PessoaRecycleAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +38,21 @@ public class ListaActivity extends AppCompatActivity {
             pessoas = new ArrayList<>();
         }
 
-        adapter = new PessoaAdapter(this, pessoas);
-        listView.setAdapter(adapter);
+        adapter = new PessoaRecycleAdapter(pessoas, new PessoaRecycleAdapter.AoClicarNaPessoa() {
+            @Override
+            public void pessoaFoiClicada(Pessoa pessoa, int id) {
+                Intent it = new Intent(ListaActivity.this, DetalheActivity.class);
+                it.putExtra(DetalheActivity.EXTRA_PESSOA, Parcels.wrap(pessoa));
+                it.putExtra(DetalheActivity.EXTRA_ID, id);
+                startActivityForResult(it, REQ_CADASTRO);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(layoutManager);
+
+        configuraSwipe();
     }
 
     @Override
@@ -67,21 +78,37 @@ public class ListaActivity extends AppCompatActivity {
         }
     }
 
-    @OnItemClick(R.id.lista_listview)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Toast.makeText(this, pessoas.get(position).nome, Toast.LENGTH_SHORT).show();;
-
-        Pessoa p = pessoas.get(position);
-        Intent it = new Intent(this, DetalheActivity.class);
-        it.putExtra(DetalheActivity.EXTRA_PESSOA, Parcels.wrap(p));
-        it.putExtra(DetalheActivity.EXTRA_ID, position);
-        startActivityForResult(it, REQ_CADASTRO);
-    }
-
     @OnClick(R.id.lista_fab_add)
     void onClick(){
         Intent it = new Intent(this, DetalheActivity.class);
         startActivityForResult(it, REQ_CADASTRO);
     }
 
+    private void configuraSwipe() {
+        ItemTouchHelper.SimpleCallback swipe =
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(
+                            RecyclerView recyclerView,
+                            RecyclerView.ViewHolder viewHolder,
+                            RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(
+                            RecyclerView.ViewHolder viewHolder,
+                            int swipeDir) {
+
+                        final int position =
+                                viewHolder.getAdapterPosition();
+                        pessoas.remove(position);
+                        adapter.notifyItemRemoved(position);
+                    }
+                };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipe);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
 }

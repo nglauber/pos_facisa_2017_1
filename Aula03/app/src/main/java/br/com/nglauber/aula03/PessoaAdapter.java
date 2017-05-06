@@ -26,18 +26,18 @@ public class PessoaAdapter extends ArrayAdapter<Pessoa> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Pessoa pessoa = getItem(position);
 
-        BatataDoce viewHolder;
+        ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(
                     R.layout.item_pessoa, parent, false);
 
-            viewHolder = new BatataDoce();
+            viewHolder = new ViewHolder();
 
             viewHolder.imageView = ButterKnife.findById(convertView, R.id.img_logo);
             viewHolder.textView = ButterKnife.findById(convertView, R.id.txt_nome);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (BatataDoce)convertView.getTag();
+            viewHolder = (ViewHolder)convertView.getTag();
         }
 
         int image;
@@ -58,7 +58,7 @@ public class PessoaAdapter extends ArrayAdapter<Pessoa> {
         return convertView;
     }
 
-    static class BatataDoce {
+    static class ViewHolder {
         ImageView imageView;
         TextView textView;
     }

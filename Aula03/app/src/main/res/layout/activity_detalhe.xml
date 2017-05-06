@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/detalhe_texto_nome"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,10 +45,11 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="16dp"
         android:id="@+id/detalhe_rg_social"
         android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/detalhe_text_social">
+        app:layout_constraintTop_toBottomOf="@+id/detalhe_text_social"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <RadioButton
             android:id="@+id/detalhe_radio_fb"
