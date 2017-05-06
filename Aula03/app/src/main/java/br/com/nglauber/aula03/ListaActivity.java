@@ -12,7 +12,9 @@ import android.view.View;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import br.com.nglauber.aula03.persistence.PessoaDb;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,25 +22,25 @@ import butterknife.OnClick;
 public class ListaActivity extends AppCompatActivity {
 
     private static final int REQ_CADASTRO = 0;
-    public static final String EXTRA_PESSOAS = "pessoas";
 
-    private ArrayList<Pessoa> pessoas;
+    private List<Pessoa> pessoas;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
     PessoaRecycleAdapter adapter;
 
+    PessoaDb db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista);
         ButterKnife.bind(this);
-        if (savedInstanceState != null) {
-            pessoas = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_PESSOAS));
-        } else {
-            pessoas = new ArrayList<>();
-        }
+
+        db = new PessoaDb(this);
+
+        pessoas = new ArrayList<>();
 
         adapter = new PessoaRecycleAdapter(pessoas, new PessoaRecycleAdapter.AoClicarNaPessoa() {
             @Override
@@ -55,12 +57,8 @@ public class ListaActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         configuraSwipe();
-    }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_PESSOAS, Parcels.wrap(pessoas));
+        refresh();
     }
 
     @Override
@@ -68,14 +66,7 @@ public class ListaActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_CADASTRO) {
             if (resultCode == RESULT_OK) {
-                Pessoa p = Parcels.unwrap(data.getParcelableExtra(DetalheActivity.EXTRA_PESSOA));
-                int id = data.getIntExtra(DetalheActivity.EXTRA_ID, -1);
-                if (id == -1) {
-                    pessoas.add(p);
-                } else {
-                    pessoas.set(id, p);
-                }
-                adapter.notifyDataSetChanged();
+                refresh();
             }
         }
     }
@@ -112,17 +103,24 @@ public class ListaActivity extends AppCompatActivity {
 
     private void excluirPessoa(final int position) {
 
-        final Pessoa pessoaExcluida = pessoas.remove(position);
-        adapter.notifyItemRemoved(position);
+        final Pessoa pessoa = pessoas.get(position);
+        db.excluir(pessoa);
+        refresh();
 
         Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.msg_pessoa_excluida, Snackbar.LENGTH_LONG)
                 .setAction(R.string.button_desfazer, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        pessoas.add(position, pessoaExcluida);
-                        adapter.notifyItemInserted(position);
+                        db.salvar(pessoa, true);
+                        refresh();
                     }
                 })
                 .show();
+    }
+
+    private void refresh(){
+        pessoas.clear();
+        pessoas.addAll(db.listar());
+        adapter.notifyDataSetChanged();
     }
 }

@@ -8,6 +8,7 @@ import android.widget.RadioGroup;
 
 import org.parceler.Parcels;
 
+import br.com.nglauber.aula03.persistence.PessoaDb;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,12 +25,15 @@ public class DetalheActivity extends AppCompatActivity {
 
     Pessoa pessoa;
     int id;
+    PessoaDb db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhe);
         ButterKnife.bind(this);
+
+        db = new PessoaDb(this);
 
         pessoa = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_PESSOA));
         id = getIntent().getIntExtra(EXTRA_ID, -1);
@@ -73,6 +77,7 @@ public class DetalheActivity extends AppCompatActivity {
         it.putExtra(EXTRA_PESSOA, Parcels.wrap(pessoa));
         it.putExtra(EXTRA_ID, id);
         setResult(RESULT_OK, it);
+        db.salvar(pessoa);
         finish();
     }
 }
