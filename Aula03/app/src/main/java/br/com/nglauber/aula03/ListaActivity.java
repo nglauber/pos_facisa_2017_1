@@ -115,7 +115,7 @@ public class ListaActivity extends AppCompatActivity {
         final Pessoa pessoaExcluida = pessoas.remove(position);
         adapter.notifyItemRemoved(position);
 
-        Snackbar.make(recyclerView, R.string.msg_pessoa_excluida, Snackbar.LENGTH_LONG)
+        Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.msg_pessoa_excluida, Snackbar.LENGTH_LONG)
                 .setAction(R.string.button_desfazer, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
