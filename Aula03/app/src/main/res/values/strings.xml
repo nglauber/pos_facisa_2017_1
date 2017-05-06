@@ -7,4 +7,7 @@
     <string name="detalhe_texto_twitter">Twitter</string>
     <string name="detalhe_texto_gplus">Google Plus</string>
     <string name="detalhe_button_salvar">Salvar</string>
+
+    <string name="msg_pessoa_excluida">Pessoa excluída</string>
+    <string name="button_desfazer">Desfazer</string>
 </resources>

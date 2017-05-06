@@ -2,10 +2,12 @@ package br.com.nglauber.aula03;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 
 import org.parceler.Parcels;
 
@@ -99,16 +101,28 @@ public class ListaActivity extends AppCompatActivity {
 
                     @Override
                     public void onSwiped(
-                            RecyclerView.ViewHolder viewHolder,
-                            int swipeDir) {
-
-                        final int position =
-                                viewHolder.getAdapterPosition();
-                        pessoas.remove(position);
-                        adapter.notifyItemRemoved(position);
+                            RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        final int position = viewHolder.getAdapterPosition();
+                        excluirPessoa(position);
                     }
                 };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipe);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void excluirPessoa(final int position) {
+
+        final Pessoa pessoaExcluida = pessoas.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        Snackbar.make(recyclerView, R.string.msg_pessoa_excluida, Snackbar.LENGTH_LONG)
+                .setAction(R.string.button_desfazer, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pessoas.add(position, pessoaExcluida);
+                        adapter.notifyItemInserted(position);
+                    }
+                })
+                .show();
     }
 }
