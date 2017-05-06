@@ -6,41 +6,72 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import org.parceler.Parcels;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DetalheActivity extends AppCompatActivity {
 
+    public static final String EXTRA_PESSOA = "pessoa";
+    public static final String EXTRA_ID = "id";
+
     @BindView(R.id.detalhe_edit_nome)
     EditText edtNome;
     @BindView(R.id.detalhe_rg_social)
     RadioGroup rgSocial;
+
+    Pessoa pessoa;
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhe);
         ButterKnife.bind(this);
+
+        pessoa = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_PESSOA));
+        id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (pessoa == null) {
+            pessoa = new Pessoa();
+        } else {
+            preencherCampos();
+        }
+    }
+
+    private void preencherCampos() {
+        edtNome.setText(pessoa.nome);
+        switch (pessoa.redesocial){
+            case Pessoa.RS_FACEBOOK:
+                rgSocial.check(R.id.detalhe_radio_fb);
+                break;
+            case Pessoa.RS_GPLUS:
+                rgSocial.check(R.id.detalhe_radio_gplus);
+                break;
+            case Pessoa.RS_TWITTER:
+                rgSocial.check(R.id.detalhe_radio_tw);
+                break;
+        }
     }
 
     @OnClick(R.id.detalhe_button_salvar)
     void onSalvarClick(){
-        Pessoa p = new Pessoa();
-        p.nome = edtNome.getText().toString();
+        pessoa.nome = edtNome.getText().toString();
         switch (rgSocial.getCheckedRadioButtonId()){
             case R.id.detalhe_radio_fb:
-                p.redesocial = Pessoa.RS_FACEBOOK;
+                pessoa.redesocial = Pessoa.RS_FACEBOOK;
                 break;
             case R.id.detalhe_radio_tw:
-                p.redesocial = Pessoa.RS_TWITTER;
+                pessoa.redesocial = Pessoa.RS_TWITTER;
                 break;
             case R.id.detalhe_radio_gplus:
-                p.redesocial = Pessoa.RS_GPLUS;
+                pessoa.redesocial = Pessoa.RS_GPLUS;
                 break;
         }
         Intent it = new Intent();
-        it.putExtra("pessoa", p);
+        it.putExtra(EXTRA_PESSOA, Parcels.wrap(pessoa));
+        it.putExtra(EXTRA_ID, id);
         setResult(RESULT_OK, it);
         finish();
     }

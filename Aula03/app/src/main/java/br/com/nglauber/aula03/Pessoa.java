@@ -1,8 +1,9 @@
 package br.com.nglauber.aula03;
 
-import java.io.Serializable;
+import org.parceler.Parcel;
 
-public class Pessoa implements Serializable {
+@Parcel
+public class Pessoa {
 
     public static final int RS_FACEBOOK = 0;
     public static final int RS_TWITTER = 1;

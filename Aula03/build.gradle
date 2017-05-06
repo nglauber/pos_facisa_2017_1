@@ -4,6 +4,7 @@ buildscript {
     ext.version_support = '25.3.1'
     ext.version_butterknife = '8.5.1'
     ext.version_constraint = '1.0.2'
+    ext.version_parceler = '1.1.6'
 
     repositories {
         jcenter()
