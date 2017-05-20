@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import org.parceler.Parcels;
 
 import java.io.IOException;
-import java.util.List;
 
 import br.com.nglauber.aula06_movies.R;
 import br.com.nglauber.aula06_movies.dao.AppDatabase;
@@ -46,16 +44,16 @@ public class MovieDetailFragment extends Fragment {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_detail, container, false);
         binding.setMovie(movie);
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleFavorite();
-            }
-        });
+        if (getResources().getBoolean(R.bool.tablet)) {
+            binding.fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleFavorite();
+                }
+            });
+        }
 
         new MovieByIdTask().execute(movie.imdbId);
-
-        printFavorites();
 
         return binding.getRoot();
     }
@@ -78,16 +76,7 @@ public class MovieDetailFragment extends Fragment {
         } else {
             dao.insertMovie(movie);
         }
-        printFavorites();
     }
-
-    void printFavorites(){
-        List<Movie> movies = dao.listAllFavorites();
-        for (Movie m : movies) {
-            Log.d("NGVL", m.imdbId + m.title);
-        }
-    }
-
 
     class MovieByIdTask extends AsyncTask<String, Void, Movie> {
 

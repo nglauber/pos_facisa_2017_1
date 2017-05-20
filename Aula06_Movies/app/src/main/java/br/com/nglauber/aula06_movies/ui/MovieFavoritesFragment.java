@@ -1,12 +1,14 @@
 package br.com.nglauber.aula06_movies.ui;
 
 
+import android.arch.lifecycle.LifecycleFragment;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,9 @@ import br.com.nglauber.aula06_movies.dao.MovieDao;
 import br.com.nglauber.aula06_movies.databinding.FragmentMovieListBinding;
 import br.com.nglauber.aula06_movies.model.Movie;
 
-public class MovieFavoritesFragment extends Fragment {
+public class MovieFavoritesFragment extends LifecycleFragment {
 
-    List<Movie> movies;
+    LiveData<List<Movie>> liveMovies;
     FragmentMovieListBinding binding;
     MovieDao dao;
 
@@ -46,32 +48,35 @@ public class MovieFavoritesFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false);
 
-        if (movies != null) {
-            updateList();
-        }
         new MovieFavoritesTask().execute();
 
         return binding.getRoot();
     }
 
-    class MovieFavoritesTask extends AsyncTask<String, Void, List<Movie>> {
+    class MovieFavoritesTask extends AsyncTask<String, Void, LiveData<List<Movie>>> {
 
         @Override
-        protected List<Movie> doInBackground(String... params) {
+        protected LiveData<List<Movie>> doInBackground(String... params) {
             return dao.listAllFavorites();
         }
 
         @Override
-        protected void onPostExecute(List<Movie> m) {
+        protected void onPostExecute(LiveData<List<Movie>> m) {
             super.onPostExecute(m);
-            movies = m;
-            boolean isEmpty = movies == null || movies.size() <= 0;
-            binding.txtEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-            updateList();
+            liveMovies = m;
+            liveMovies.observe(MovieFavoritesFragment.this, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    boolean isEmpty = movies == null || movies.size() <= 0;
+                    binding.txtEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                    updateList(movies);
+                }
+            });
+
         }
     }
 
-    private void updateList() {
+    private void updateList(List<Movie> movies) {
         OnMovieClickListener listener = null;
         if (getActivity() instanceof OnMovieClickListener) {
             listener = (OnMovieClickListener) getActivity();

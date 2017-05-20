@@ -1,5 +1,6 @@
 package br.com.nglauber.aula06_movies.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -18,7 +19,7 @@ public interface MovieDao {
     void insertMovie(Movie movie);
 
     @Query("SELECT * FROM Movie ORDER BY title")
-    List<Movie> listAllFavorites();
+    LiveData<List<Movie>> listAllFavorites();
 
     @Query("SELECT COUNT(*) FROM Movie WHERE imdbId = :imdbId")
     boolean isFavorite(String imdbId);
