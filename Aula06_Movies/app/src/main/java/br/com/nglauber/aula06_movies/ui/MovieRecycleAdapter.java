@@ -1,20 +1,16 @@
 package br.com.nglauber.aula06_movies.ui;
 
+import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import br.com.nglauber.aula06_movies.R;
+import br.com.nglauber.aula06_movies.databinding.ItemMovieBinding;
 import br.com.nglauber.aula06_movies.model.Movie;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MovieRecycleAdapter extends
         RecyclerView.Adapter<MovieRecycleAdapter.VH> {
@@ -30,10 +26,11 @@ public class MovieRecycleAdapter extends
 
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_movie, parent, false);
+        ItemMovieBinding binding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()),
+                        R.layout.item_movie, parent, false);
 
-        final VH vh = new VH(v);
+        final VH vh = new VH(binding);
         vh.itemView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -51,11 +48,7 @@ public class MovieRecycleAdapter extends
     @Override
     public void onBindViewHolder(VH holder, int pos) {
         Movie movie = movies.get(pos);
-        Glide.with(holder.imgPoster.getContext())
-                .load(movie.poster)
-                .into(holder.imgPoster);
-        holder.txtTitle.setText(movie.title);
-        holder.txtYear.setText(movie.year);
+        holder.binding.setMovie(movie);
     }
 
     @Override
@@ -65,16 +58,11 @@ public class MovieRecycleAdapter extends
 
     public static class VH extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.img_poster)
-        public ImageView imgPoster;
-        @BindView(R.id.txt_title)
-        public TextView txtTitle;
-        @BindView(R.id.txt_year)
-        public TextView txtYear;
+        ItemMovieBinding binding;
 
-        public VH(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        public VH(ItemMovieBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 

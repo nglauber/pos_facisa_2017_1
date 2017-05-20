@@ -1,13 +1,14 @@
 package br.com.nglauber.aula06_movies.ui;
 
 
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,27 +16,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.util.List;
 
 import br.com.nglauber.aula06_movies.R;
+import br.com.nglauber.aula06_movies.databinding.FragmentMovieListBinding;
 import br.com.nglauber.aula06_movies.http.MoviesParser;
 import br.com.nglauber.aula06_movies.model.Movie;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MovieListFragment extends Fragment
         implements SearchView.OnQueryTextListener {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.txt_empty)
-    TextView txtEmpty;
-
     List<Movie> movies;
+    FragmentMovieListBinding binding;
 
     public MovieListFragment() {
     }
@@ -50,13 +46,12 @@ public class MovieListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
-        ButterKnife.bind(this, view);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false);
 
         if (movies != null) {
             updateList();
         }
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -98,7 +93,7 @@ public class MovieListFragment extends Fragment
             super.onPostExecute(m);
             movies = m;
             boolean isEmpty = movies == null || movies.size() <= 0;
-            txtEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            binding.txtEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
             updateList();
         }
     }
@@ -110,9 +105,12 @@ public class MovieListFragment extends Fragment
                 // Call detail activity
                 // API for movie detail
                 // http://www.omdbapi.com/?i=[movie.imdbId]&plot=full
+                Intent it = new Intent(getActivity(), MovieDetailActivity.class);
+                it.putExtra(MovieDetailActivity.EXTRA_MOVIE, Parcels.wrap(movie));
+                startActivity(it);
             }
         });
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.recyclerView.setAdapter(adapter);
     }
 }

@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_search">Buscar filmes</string>
     <string name="msg_empty_list">Nenhum filme encontrado</string>
+    <string name="title_activity_movie_detail">Movie Details</string>
+
 </resources>
