@@ -2,7 +2,6 @@ package br.com.nglauber.aula06_movies.ui;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -15,6 +14,7 @@ import br.com.nglauber.aula06_movies.model.Movie;
 public class MovieDetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_MOVIE = "movie";
+    public static final String DETAIL_FRAGMENT = "detailFragment";
 
     ActivityMovieDetailBinding binding;
 
@@ -29,8 +29,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                MovieDetailFragment mdf = (MovieDetailFragment)
+                        getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT);
+                if (mdf != null) {
+                    mdf.toggleFavorite();
+                }
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -42,7 +45,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             MovieDetailFragment mdf = MovieDetailFragment.newInstance(movie);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_detail, mdf, "detailFragment")
+                    .replace(R.id.content_detail, mdf, DETAIL_FRAGMENT)
                     .commit();
         }
     }

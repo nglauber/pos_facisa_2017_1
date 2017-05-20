@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="br.com.nglauber.aula06_movies.ui.MoviesActivity">
 
-    <fragment
-        android:id="@+id/fragment_list_movie"
-        android:name="br.com.nglauber.aula06_movies.ui.MovieListFragment"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" /> 
 
-</FrameLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
