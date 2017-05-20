@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="movie"
-            type="br.com.nglauber.aula06_movies.model.Movie"/>
+            type="br.com.nglauber.aula06_movies.model.Movie" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -34,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@{movie.poster}"/>
+                    android:src="@{movie.poster}" />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -46,10 +47,11 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <include
-            android:id="@+id/content"
-            app:movie="@{movie}"
-            layout="@layout/content_movie_detail" />
+        <FrameLayout
+            android:id="@+id/content_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

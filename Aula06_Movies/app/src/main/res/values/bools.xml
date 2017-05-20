@@ -1,0 +1,4 @@
+<resources>
+    <bool name="smartphone">true</bool>
+    <bool name="tablet">false</bool>
+</resources>
