@@ -1,14 +1,22 @@
 package br.com.nglauber.aula06_movies.ui;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.parceler.Parcels;
 
@@ -44,18 +52,26 @@ public class MovieDetailFragment extends Fragment {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_detail, container, false);
         binding.setMovie(movie);
-        if (getResources().getBoolean(R.bool.tablet)) {
-            binding.fab.setOnClickListener(new View.OnClickListener() {
+        updateFabIcon(dao.isFavorite(movie.imdbId));
+        binding.fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     toggleFavorite();
                 }
             });
-        }
 
         new MovieByIdTask().execute(movie.imdbId);
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getResources().getBoolean(R.bool.smartphone)) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public static MovieDetailFragment newInstance(Movie m) {
@@ -69,13 +85,39 @@ public class MovieDetailFragment extends Fragment {
     }
 
     public void toggleFavorite() {
-        Movie movie = binding.getMovie();
+        final Movie movie = binding.getMovie();
         boolean isFavorite = dao.isFavorite(movie.imdbId);
         if (isFavorite) {
             dao.deleteMovies(movie);
+            Toast.makeText(getActivity(), R.string.msg_favorite_removed, Toast.LENGTH_SHORT).show();
         } else {
             dao.insertMovie(movie);
+            Toast.makeText(getActivity(), R.string.msg_favorite_added, Toast.LENGTH_SHORT).show();
         }
+
+        // Animate
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(
+                binding.fab, View.SCALE_X, 0f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(
+                binding.fab, View.SCALE_Y, 0f);
+        scaleX.setRepeatMode(ValueAnimator.REVERSE);
+        scaleX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                super.onAnimationRepeat(animation);
+                updateFabIcon(dao.isFavorite(movie.imdbId));
+            }
+        });
+        scaleY.setRepeatMode(ValueAnimator.REVERSE);
+        scaleX.setRepeatCount(1);
+        scaleY.setRepeatCount(1);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(scaleX, scaleY);
+        set.start();
+    }
+
+    private void updateFabIcon(boolean isFavorite){
+        binding.fab.setImageResource(isFavorite ? R.drawable.ic_clear : R.drawable.ic_check);
     }
 
     class MovieByIdTask extends AsyncTask<String, Void, Movie> {

@@ -7,4 +7,6 @@
 
     <string name="tab_search">Busca</string>
     <string name="tab_favorites">Favoritos</string>
+    <string name="msg_favorite_removed">Filme removido dos favoritos</string>
+    <string name="msg_favorite_added">Filme adicionado aos favoritos</string>
 </resources>

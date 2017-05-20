@@ -3,7 +3,6 @@ package br.com.nglauber.aula06_movies.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import org.parceler.Parcels;
 
@@ -24,22 +23,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(
                 this, R.layout.activity_movie_detail);
 
-        setSupportActionBar(binding.toolbar);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MovieDetailFragment mdf = (MovieDetailFragment)
-                        getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT);
-                if (mdf != null) {
-                    mdf.toggleFavorite();
-                }
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         Movie movie = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_MOVIE));
-        binding.setMovie(movie);
 
         if (savedInstanceState == null) {
             MovieDetailFragment mdf = MovieDetailFragment.newInstance(movie);
