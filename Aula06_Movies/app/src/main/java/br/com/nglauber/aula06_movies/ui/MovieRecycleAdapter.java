@@ -12,8 +12,7 @@ import br.com.nglauber.aula06_movies.R;
 import br.com.nglauber.aula06_movies.databinding.ItemMovieBinding;
 import br.com.nglauber.aula06_movies.model.Movie;
 
-public class MovieRecycleAdapter extends
-        RecyclerView.Adapter<MovieRecycleAdapter.VH> {
+public class MovieRecycleAdapter extends RecyclerView.Adapter<MovieRecycleAdapter.VH> {
 
     List<Movie> movies;
     OnMovieClickListener listener;
@@ -49,6 +48,7 @@ public class MovieRecycleAdapter extends
     public void onBindViewHolder(VH holder, int pos) {
         Movie movie = movies.get(pos);
         holder.binding.setMovie(movie);
+        holder.binding.executePendingBindings();
     }
 
     @Override
@@ -64,9 +64,5 @@ public class MovieRecycleAdapter extends
             super(binding.getRoot());
             this.binding = binding;
         }
-    }
-
-    public interface OnMovieClickListener {
-        void onMovieClick(Movie movie);
     }
 }

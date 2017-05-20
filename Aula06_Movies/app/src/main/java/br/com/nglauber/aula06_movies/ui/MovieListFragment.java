@@ -1,7 +1,6 @@
 package br.com.nglauber.aula06_movies.ui;
 
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.util.List;
@@ -99,18 +96,14 @@ public class MovieListFragment extends Fragment
     }
 
     private void updateList() {
-        MovieRecycleAdapter adapter = new MovieRecycleAdapter(movies, new MovieRecycleAdapter.OnMovieClickListener() {
-            @Override
-            public void onMovieClick(Movie movie) {
-                // Call detail activity
-                // API for movie detail
-                // http://www.omdbapi.com/?i=[movie.imdbId]&plot=full
-                Intent it = new Intent(getActivity(), MovieDetailActivity.class);
-                it.putExtra(MovieDetailActivity.EXTRA_MOVIE, Parcels.wrap(movie));
-                startActivity(it);
-            }
-        });
+        OnMovieClickListener listener = null;
+        if (getActivity() instanceof OnMovieClickListener) {
+            listener = (OnMovieClickListener) getActivity();
+        }
+
+        MovieRecycleAdapter adapter = new MovieRecycleAdapter(movies, listener);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.recyclerView.setAdapter(adapter);
     }
+
 }
