@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Aula 12</string>
+    <string name="action_settings">Settings</string>
+    <string name="detalhe_texto_nome">Nome</string>
+    <string name="detalhe_texto_social">Rede social</string>
+    <string name="detalhe_texto_facebook">Facebook</string>
+    <string name="detalhe_texto_twitter">Twitter</string>
+    <string name="detalhe_texto_gplus">Google Plus</string>
+    <string name="detalhe_button_salvar">Salvar</string>
+
+    <string name="msg_pessoa_excluida">Pessoa excluída</string>
+    <string name="button_desfazer">Desfazer</string>
+</resources>
