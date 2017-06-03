@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="toolbar_translucent_height">80dp</dimen>
+    <dimen name="toolbar_padding_top">24dp</dimen>
+</resources>

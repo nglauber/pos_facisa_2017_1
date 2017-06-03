@@ -7,13 +7,19 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -35,6 +41,7 @@ public class MovieDetailFragment extends Fragment {
 
     FragmentMovieDetailBinding binding;
     MovieDao dao;
+    ShareActionProvider shareActionProvider;
 
     public MovieDetailFragment() {
     }
@@ -42,6 +49,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        setHasOptionsMenu(true);
         dao = AppDatabase.getInMemoryDatabase(getContext()).movieDao();
     }
 
@@ -72,6 +80,18 @@ public class MovieDetailFragment extends Fragment {
             ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_movie_detail, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
     }
 
     public static MovieDetailFragment newInstance(Movie m) {
@@ -120,6 +140,14 @@ public class MovieDetailFragment extends Fragment {
         binding.fab.setImageResource(isFavorite ? R.drawable.ic_clear : R.drawable.ic_check);
     }
 
+    private void setShareIntent(Movie m) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Eu gostei do filme "+ m.title +" veja no IMDB http://www.imdb.com/title/"+ m.imdbId);
+        sendIntent.setType("text/plain");
+        shareActionProvider.setShareIntent(sendIntent);
+    }
+
     class MovieByIdTask extends AsyncTask<String, Void, Movie> {
 
         @Override
@@ -138,7 +166,9 @@ public class MovieDetailFragment extends Fragment {
             super.onPostExecute(m);
             if (m != null) {
                 binding.setMovie(m);
+                setShareIntent(m);
             }
         }
     }
+
 }

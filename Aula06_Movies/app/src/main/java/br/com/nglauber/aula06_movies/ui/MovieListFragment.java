@@ -1,7 +1,12 @@
 package br.com.nglauber.aula06_movies.ui;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +28,7 @@ import java.util.List;
 import br.com.nglauber.aula06_movies.R;
 import br.com.nglauber.aula06_movies.databinding.FragmentMovieListBinding;
 import br.com.nglauber.aula06_movies.http.MoviesParser;
+import br.com.nglauber.aula06_movies.http.Util;
 import br.com.nglauber.aula06_movies.model.Movie;
 
 public class MovieListFragment extends Fragment
@@ -29,9 +36,7 @@ public class MovieListFragment extends Fragment
 
     List<Movie> movies;
     FragmentMovieListBinding binding;
-
-    public MovieListFragment() {
-    }
+    ConnectionReceiver receiver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +53,24 @@ public class MovieListFragment extends Fragment
         if (movies != null) {
             updateList();
         }
+
+        showNoConnectionMessage(!Util.hasConnection(getActivity()));
         return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        receiver = new ConnectionReceiver();
+        getActivity().registerReceiver(receiver, filter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(receiver);
     }
 
     @Override
@@ -63,7 +85,11 @@ public class MovieListFragment extends Fragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        new MovieSearchTask().execute(query);
+        if (Util.hasConnection(getActivity())) {
+            new MovieSearchTask().execute(query);
+        } else {
+            Toast.makeText(getActivity(), R.string.msg_no_internet, Toast.LENGTH_SHORT).show();
+        }
         return false;
     }
 
@@ -95,6 +121,17 @@ public class MovieListFragment extends Fragment
         }
     }
 
+    class ConnectionReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean isDisconnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+            if (movies == null || movies.isEmpty()) {
+                showNoConnectionMessage(isDisconnected);
+            }
+        }
+    }
+
     private void updateList() {
         OnMovieClickListener listener = null;
         if (getActivity() instanceof OnMovieClickListener) {
@@ -106,4 +143,13 @@ public class MovieListFragment extends Fragment
         binding.recyclerView.setAdapter(adapter);
     }
 
+    private void showNoConnectionMessage(boolean show) {
+        if (show) {
+            binding.txtEmpty.setText(R.string.msg_no_internet);
+            binding.txtEmpty.setVisibility(View.VISIBLE);
+        } else {
+            binding.txtEmpty.setText(null);
+            binding.txtEmpty.setVisibility(View.GONE);
+        }
+    }
 }

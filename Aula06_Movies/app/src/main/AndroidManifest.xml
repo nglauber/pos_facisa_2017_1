@@ -3,6 +3,7 @@
     package="br.com.nglauber.aula06_movies">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,8 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MoviesActivity"
-            android:launchMode="singleTop">
+        <activity
+            android:name=".ui.MoviesActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/MoviesActivityStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,7 +25,7 @@
             android:name=".ui.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
             android:parentActivityName=".ui.MoviesActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MovieDetailActivityStyle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.nglauber.aula06_movies.ui.MoviesActivity" />

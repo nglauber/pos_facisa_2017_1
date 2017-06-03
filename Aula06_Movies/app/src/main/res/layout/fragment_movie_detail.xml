@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="movie"
             type="br.com.nglauber.aula06_movies.model.Movie" />
@@ -12,21 +13,18 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         tools:context="br.com.nglauber.aula06_movies.ui.MovieDetailActivity">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
-            android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -39,7 +37,8 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="@dimen/toolbar_translucent_height"
+                    android:paddingTop="@dimen/toolbar_padding_top"
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -52,66 +51,74 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context="br.com.nglauber.aula06_movies.ui.MovieDetailActivity">
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
-                android:orientation="vertical">
+                app:cardCornerRadius="5dp"
+                app:cardElevation="4dp">
 
-                <TextView
-                    android:id="@+id/txtTitle"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{movie.title}" />
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-                <TextView
-                    android:id="@+id/txtYear"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.year}" />
+                    <TextView
+                        android:id="@+id/txtTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.title}" />
 
-                <TextView
-                    android:id="@+id/txtReleased"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.released}" />
+                    <TextView
+                        android:id="@+id/txtYear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.year}" />
 
-                <TextView
-                    android:id="@+id/txtAwards"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.awards}" />
+                    <TextView
+                        android:id="@+id/txtReleased"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.released}" />
 
-                <TextView
-                    android:id="@+id/txtGenre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.genre}" />
+                    <TextView
+                        android:id="@+id/txtAwards"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.awards}" />
 
-                <TextView
-                    android:id="@+id/txtDirector"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.director}" />
+                    <TextView
+                        android:id="@+id/txtGenre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.genre}" />
 
-                <TextView
-                    android:id="@+id/txtActors"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.actors}" />
+                    <TextView
+                        android:id="@+id/txtDirector"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.director}" />
 
-                <TextView
-                    android:id="@+id/txtRating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.imdbRating}" />
+                    <TextView
+                        android:id="@+id/txtActors"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.actors}" />
 
-                <TextView
-                    android:id="@+id/txtPlot"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{movie.plot}" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtRating"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.imdbRating}" />
+
+                    <TextView
+                        android:id="@+id/txtPlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{movie.plot}" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </android.support.v4.widget.NestedScrollView>
 
         <android.support.design.widget.FloatingActionButton
@@ -119,8 +126,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
-            app:layout_anchor="@+id/app_bar"
             android:tint="@android:color/white"
+            app:layout_anchor="@+id/app_bar"
             app:layout_anchorGravity="bottom|end"
             app:srcCompat="@android:drawable/ic_dialog_email" />
     </android.support.design.widget.CoordinatorLayout>
